@@ -7,4 +7,8 @@ https://console.firebase.google.com/u/0/project/nextjs-feedback/authentication/p
 
 The OAuth app clientId and secret need to be filled out in firebase github provider config.
 
-`auth.js`: https://firebase.google.com/docs/auth/web/github-auth
+`auth.ts`: https://firebase.google.com/docs/auth/web/github-auth
+
+## FireStore
+
+Initialize Cloud FireStore with test mode: https://console.firebase.google.com/u/0/project/nextjs-feedback/firestore.

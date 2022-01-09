@@ -1,6 +1,17 @@
-import React, {useState, useEffect, useContext, createContext} from 'react';
-import {getAuth, signOut, signInWithPopup, GithubAuthProvider, onAuthStateChanged, User} from 'firebase/auth';
-import '../../lib/firebase';
+import '@/lib/firebase';
+
+import {
+  getAuth,
+  GithubAuthProvider,
+  onAuthStateChanged,
+  signInWithPopup,
+  signOut,
+  User as FirebaseUser,
+} from 'firebase/auth';
+import React, {createContext, useContext, useEffect, useState} from 'react';
+
+import {createUser} from '@/lib/firestore';
+import {User} from '@/models/user';
 
 type AuthState = {
   user: User | null;
@@ -43,8 +54,11 @@ function useProvideAuth() {
         const credential = GithubAuthProvider.credentialFromResult(res);
         const token = credential?.accessToken;
 
-        setUser(res.user);
-        return res.user;
+        const user = formatUser(res.user);
+        // save to firebase db
+        createUser(user);
+        setUser(user);
+        return user;
       })
       .catch((error) => {
         // Handle Errors here.
@@ -65,10 +79,11 @@ function useProvideAuth() {
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser) {
         // User is signed in, see docs for a list of available properties
         // https://firebase.google.com/docs/reference/js/firebase.User
+        const user = formatUser(firebaseUser);
         setUser(user);
       } else {
         // User is signed out
@@ -83,5 +98,15 @@ function useProvideAuth() {
     user,
     signinWithGithub,
     signout,
+  };
+}
+
+function formatUser(user: FirebaseUser): User {
+  return {
+    uid: user.uid,
+    email: user.email,
+    name: user.displayName,
+    provider: user.providerData[0].providerId,
+    photoUrl: user.photoURL,
   };
 }
