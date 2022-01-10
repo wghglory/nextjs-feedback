@@ -1,4 +1,4 @@
-import {addDoc, collection, doc, getFirestore, setDoc} from 'firebase/firestore';
+import {addDoc, collection, doc, getFirestore, serverTimestamp, setDoc} from 'firebase/firestore';
 
 import {Site} from '@/models/site';
 import {User} from '@/models/user';
@@ -16,7 +16,7 @@ export async function createUser(user: User) {
 
 export async function createSite(site: Site) {
   try {
-    return await addDoc(collection(db, 'sites'), site);
+    return await addDoc(collection(db, 'sites'), {...site, createdAt: serverTimestamp()});
   } catch (e) {
     console.error('Error adding document: ', e);
   }
