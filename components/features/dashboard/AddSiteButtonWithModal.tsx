@@ -11,35 +11,86 @@ import {
   ModalHeader,
   ModalOverlay,
   useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
-import {useRef} from 'react';
+import React, {useRef} from 'react';
 import {Controller, useForm} from 'react-hook-form';
+import {useMutation, useQueryClient} from 'react-query';
 
+import {useAuth} from '@/components/auth/AuthProvider';
 import {createSite} from '@/lib/firestore';
 import {Site} from '@/models/site';
 
-const AddSiteButtonWithModal = () => {
+const AddSiteButtonWithModal = ({children}: {children: React.ReactNode}) => {
+  const auth = useAuth();
   const initialRef = useRef(null);
   const {isOpen, onOpen, onClose} = useDisclosure();
-  const {handleSubmit, control} = useForm({
+  const {handleSubmit, control, reset} = useForm({
     defaultValues: {
       name: '',
       url: '',
     } as Site,
   });
+  const toast = useToast();
+  const queryClient = useQueryClient();
 
-  const onCreateSite = (site: Site) => {
-    console.log(site);
-    createSite(site);
+  const postSiteMutation = useMutation((site: Site) =>
+    fetch('/api/sites', {
+      method: 'POST',
+      body: JSON.stringify(site),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+    }),
+  );
+
+  const closeModal = () => {
     onClose();
+    reset();
+  };
+
+  const onCreateSite = ({name, url}: Site) => {
+    const newSite = {
+      authorId: auth.user?.uid ?? '',
+      name,
+      url,
+    };
+
+    // createSite(newSite); // web inserts database directly.
+
+    postSiteMutation.mutate(newSite, {
+      onSuccess() {
+        toast({
+          title: 'Success!',
+          description: "We've added your site.",
+          status: 'success',
+          duration: 5000,
+          isClosable: true,
+        });
+
+        queryClient.invalidateQueries('getSites');
+
+        closeModal();
+      },
+    });
   };
 
   return (
     <>
-      <Button fontWeight="medium" maxW="200px" onClick={onOpen}>
-        Add Your First Site
+      <Button
+        onClick={onOpen}
+        backgroundColor="gray.900"
+        color="white"
+        fontWeight="medium"
+        _hover={{bg: 'gray.700'}}
+        _active={{
+          bg: 'gray.800',
+          transform: 'scale(0.95)',
+        }}
+      >
+        {children}
       </Button>
-      <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={onClose}>
+      <Modal initialFocusRef={initialRef} isOpen={isOpen} onClose={closeModal}>
         <ModalOverlay />
         <ModalContent as="form" onSubmit={handleSubmit(onCreateSite)}>
           <ModalHeader fontWeight="bold">Add Site</ModalHeader>
@@ -71,7 +122,7 @@ const AddSiteButtonWithModal = () => {
           </ModalBody>
 
           <ModalFooter>
-            <Button onClick={onClose} mr={3} fontWeight="medium">
+            <Button onClick={closeModal} mr={3} fontWeight="medium">
               Cancel
             </Button>
             <Button backgroundColor="#99FFFE" color="#194D4C" fontWeight="medium" type="submit">

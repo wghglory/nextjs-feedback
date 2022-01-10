@@ -4,7 +4,7 @@ import {useAuth} from '../auth/AuthProvider';
 import LogoIcon from '../icons/LogoIcon';
 
 export default function Navbar() {
-  const {user, signout} = useAuth();
+  const {user, signout, signinWithGithub} = useAuth();
 
   return (
     <Flex backgroundColor="white" mb={16} w="full" as="header">
@@ -15,10 +15,16 @@ export default function Navbar() {
           <Link>Feedback</Link>
         </Flex>
         <Flex justifyContent="center" alignItems="center">
-          <Button variant="ghost" mr={2} onClick={() => signout()}>
-            Log Out
-          </Button>
-          <Avatar size="sm" src={user!.photoUrl || ''} />
+          {user ? (
+            <Button variant="ghost" mr={2} onClick={() => signout()}>
+              Log Out
+            </Button>
+          ) : (
+            <Button variant="ghost" mr={2} onClick={() => signinWithGithub()}>
+              Sign In
+            </Button>
+          )}
+          <Avatar size="sm" src={user?.photoUrl || ''} />
         </Flex>
       </Flex>
     </Flex>

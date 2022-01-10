@@ -1,14 +1,22 @@
-import {useAuth} from '@/components/auth/AuthProvider';
+import {useQuery} from 'react-query';
+
+import DashboardShell from '@/components/features/dashboard/DashboardShell';
 import EmptyState from '@/components/features/dashboard/EmptyState';
+import SiteTable from '@/components/features/site-table/SiteTable';
+import SiteTableSkeleton from '@/components/features/site-table/SiteTableSkeletion';
 
 const Dashboard = () => {
-  const auth = useAuth();
+  const {data: sites, isLoading} = useQuery('getSites', () => fetch('/api/sites').then((res) => res.json()));
 
-  if (!auth.user) {
-    return 'Loading...';
+  if (isLoading) {
+    return (
+      <DashboardShell>
+        <SiteTableSkeleton />
+      </DashboardShell>
+    );
   }
 
-  return <EmptyState />;
+  return <DashboardShell>{sites?.length > 0 ? <SiteTable sites={sites} /> : <EmptyState />}</DashboardShell>;
 };
 
 export default Dashboard;
