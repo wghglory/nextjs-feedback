@@ -8,7 +8,7 @@ export default function Home() {
   const auth = useAuth();
 
   return (
-    <Flex as="main" direction="column" align="center" justify="center" h="100vh">
+    <Flex as="main" direction="column" align="center" justify="center" h="100%">
       <Head>
         <title>Fast Feedback</title>
       </Head>

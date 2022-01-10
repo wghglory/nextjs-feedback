@@ -1,3 +1,4 @@
+/* firestore for web! */
 import {addDoc, collection, doc, getFirestore, serverTimestamp, setDoc} from 'firebase/firestore';
 
 import {Site} from '@/models/site';

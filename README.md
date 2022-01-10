@@ -12,3 +12,5 @@ The OAuth app clientId and secret need to be filled out in firebase github provi
 ## FireStore
 
 Initialize Cloud FireStore with test mode: https://console.firebase.google.com/u/0/project/nextjs-feedback/firestore.
+
+Add firebase to node.js: https://firebase.google.com/docs/admin/setup?authuser=0#initialize-sdk
