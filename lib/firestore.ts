@@ -1,5 +1,6 @@
 import {addDoc, collection, doc, getFirestore, setDoc} from 'firebase/firestore';
 
+import {Site} from '@/models/site';
 import {User} from '@/models/user';
 
 const db = getFirestore();
@@ -13,7 +14,7 @@ export async function createUser(user: User) {
   }
 }
 
-export async function createSite(site: any) {
+export async function createSite(site: Site) {
   try {
     return await addDoc(collection(db, 'sites'), site);
   } catch (e) {
