@@ -1,4 +1,4 @@
-import {doc, getFirestore, setDoc} from 'firebase/firestore';
+import {addDoc, collection, doc, getFirestore, setDoc} from 'firebase/firestore';
 
 import {User} from '@/models/user';
 
@@ -8,6 +8,14 @@ const db = getFirestore();
 export async function createUser(user: User) {
   try {
     return await setDoc(doc(db, 'users', user.uid), user, {merge: true});
+  } catch (e) {
+    console.error('Error adding document: ', e);
+  }
+}
+
+export async function createSite(site: any) {
+  try {
+    return await addDoc(collection(db, 'sites'), site);
   } catch (e) {
     console.error('Error adding document: ', e);
   }
