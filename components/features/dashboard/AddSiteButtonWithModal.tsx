@@ -16,20 +16,21 @@ import {useRef} from 'react';
 import {Controller, useForm} from 'react-hook-form';
 
 import {createSite} from '@/lib/firestore';
+import {Site} from '@/models/site';
 
 const AddSiteButtonWithModal = () => {
   const initialRef = useRef(null);
   const {isOpen, onOpen, onClose} = useDisclosure();
   const {handleSubmit, control} = useForm({
     defaultValues: {
-      site: '',
+      name: '',
       url: '',
-    },
+    } as Site,
   });
 
-  const onCreateSite = (values: any) => {
-    console.log(values);
-    createSite(values);
+  const onCreateSite = (site: Site) => {
+    console.log(site);
+    createSite(site);
     onClose();
   };
 
@@ -47,7 +48,7 @@ const AddSiteButtonWithModal = () => {
             <FormControl>
               <FormLabel>Name</FormLabel>
               <Controller
-                name="site"
+                name="name"
                 control={control}
                 rules={{
                   required: true,
