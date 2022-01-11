@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type {NextApiRequest, NextApiResponse} from 'next';
 
-import {getAllFeedbacks} from '@/lib/firebase-admin-apis';
+import {getAllFeedbacks} from '@/lib/firebase-server-apis';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
   const siteId = req.query.siteId as string;

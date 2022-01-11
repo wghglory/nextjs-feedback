@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type {NextApiRequest, NextApiResponse} from 'next';
 
-import {createSite, getAllSites} from '@/lib/firebase-admin-apis';
+import {createSite, getAllSites} from '@/lib/firebase-server-apis';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
   if (req.method === 'GET') {

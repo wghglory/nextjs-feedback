@@ -1,4 +1,4 @@
-import '@/lib/firebase';
+import '@/lib/firebase-web';
 
 import {
   getAuth,
@@ -10,7 +10,7 @@ import {
 } from 'firebase/auth';
 import React, {createContext, useContext, useEffect, useState} from 'react';
 
-import {createUser} from '@/lib/firestore';
+import {createUser} from '@/lib/firebase-web-apis';
 import {User} from '@/models/user';
 
 type AuthState = {

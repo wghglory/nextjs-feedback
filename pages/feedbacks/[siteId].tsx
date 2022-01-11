@@ -6,8 +6,8 @@ import {v4} from 'uuid';
 
 import {useAuth} from '@/components/auth/AuthProvider';
 import FeedbackItem from '@/components/features/feedback/FeedbackItem';
-import {getAllFeedbacks, getAllSites} from '@/lib/firebase-admin-apis';
-import {createFeedback} from '@/lib/firestore';
+import {getAllFeedbacks, getAllSites} from '@/lib/firebase-server-apis';
+import {createFeedback} from '@/lib/firebase-web-apis';
 import {Feedback} from '@/models/feedback';
 
 export const getStaticProps = async (context: any) => {
