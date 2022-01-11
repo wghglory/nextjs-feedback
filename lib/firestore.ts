@@ -1,6 +1,7 @@
 /* firestore for web! */
 import {addDoc, collection, doc, getFirestore, serverTimestamp, setDoc} from 'firebase/firestore';
 
+import {Feedback} from '@/models/feedback';
 import {Site} from '@/models/site';
 import {User} from '@/models/user';
 
@@ -17,7 +18,15 @@ export async function createUser(user: User) {
 
 export async function createSite(site: Site) {
   try {
-    return await addDoc(collection(db, 'sites'), {...site, createdAt: serverTimestamp()});
+    return await addDoc(collection(db, 'sites'), {...site, createdAt: new Date().toISOString()});
+  } catch (e) {
+    console.error('Error adding document: ', e);
+  }
+}
+
+export async function createFeedback(feedback: Feedback) {
+  try {
+    return await addDoc(collection(db, 'feedbacks'), {...feedback, createdAt: new Date().toISOString()});
   } catch (e) {
     console.error('Error adding document: ', e);
   }
