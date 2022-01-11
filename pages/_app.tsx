@@ -1,5 +1,5 @@
 import '../styles/globals.css';
-import '@/lib/firebase';
+import '@/lib/firebase-web';
 
 import {ChakraProvider} from '@chakra-ui/react';
 import {AppProps} from 'next/app';

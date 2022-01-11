@@ -18,7 +18,7 @@ import {Controller, useForm} from 'react-hook-form';
 import {useMutation, useQueryClient} from 'react-query';
 
 import {useAuth} from '@/components/auth/AuthProvider';
-import {createSite} from '@/lib/firestore';
+import {createSite} from '@/lib/firebase-web-apis';
 import {Site} from '@/models/site';
 
 const AddSiteButtonWithModal = ({children}: {children: React.ReactNode}) => {

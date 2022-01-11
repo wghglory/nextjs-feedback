@@ -1,5 +1,5 @@
 // initialize db
-import './firebase-admin';
+import './firebase-server';
 
 import {compareDesc, parseISO} from 'date-fns';
 import {getFirestore} from 'firebase-admin/firestore';
