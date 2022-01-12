@@ -39,6 +39,17 @@ export async function getAllSites() {
   return sites;
 }
 
+export async function getUserSites(uid: string) {
+  const snapshot = await db.collection('sites').where('authorId', '==', uid).get();
+  const sites: Site[] = [];
+
+  snapshot.forEach((doc) => {
+    sites.push({...doc.data(), id: doc.id} as Site);
+  });
+
+  return sites;
+}
+
 export async function createSite(site: Site) {
   await db.collection('sites').add(site);
   return site;

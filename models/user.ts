@@ -4,4 +4,5 @@ export interface User {
   name: string | null;
   provider: string;
   photoUrl: string | null;
+  accessToken: string;
 }
