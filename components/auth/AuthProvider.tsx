@@ -8,8 +8,10 @@ import {
   signOut,
   User as FirebaseUser,
 } from 'firebase/auth';
+import cookie from 'js-cookie';
 import React, {createContext, useContext, useEffect, useState} from 'react';
 
+import {cookieName} from '@/const';
 import {createUser} from '@/lib/firebase-web-apis';
 import {User} from '@/models/user';
 
@@ -54,7 +56,14 @@ function useProvideAuth() {
         const credential = GithubAuthProvider.credentialFromResult(res);
         const token = credential?.accessToken;
 
-        const user = formatUser(res.user);
+        // res.user.getIdToken().then((accessToken) => {
+        // });
+        const user = formatUser(res.user as FirebaseUser & {accessToken: string});
+
+        cookie.set(cookieName, 'true', {
+          expires: 1,
+        });
+
         // save to firebase db
         createUser(user);
         setUser(user);
@@ -69,12 +78,14 @@ function useProvideAuth() {
         // The AuthCredential type that was used.
         const credential = GithubAuthProvider.credentialFromError(error);
         // ...
+        cookie.remove(cookieName);
       });
   };
 
   const signout = () => {
     return signOut(auth).then(() => {
       setUser(null);
+      cookie.remove(cookieName);
     });
   };
 
@@ -83,11 +94,12 @@ function useProvideAuth() {
       if (firebaseUser) {
         // User is signed in, see docs for a list of available properties
         // https://firebase.google.com/docs/reference/js/firebase.User
-        const user = formatUser(firebaseUser);
+        const user = formatUser(firebaseUser as FirebaseUser & {accessToken: string});
         setUser(user);
       } else {
         // User is signed out
         setUser(null);
+        cookie.remove(cookieName);
       }
     });
 
@@ -101,12 +113,13 @@ function useProvideAuth() {
   };
 }
 
-function formatUser(user: FirebaseUser): User {
+function formatUser(user: FirebaseUser & {accessToken: string}): User {
   return {
     uid: user.uid,
     email: user.email,
     name: user.displayName,
     provider: user.providerData[0].providerId,
     photoUrl: user.photoURL,
+    accessToken: user.accessToken,
   };
 }

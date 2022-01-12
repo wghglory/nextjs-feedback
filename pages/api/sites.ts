@@ -1,12 +1,22 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import {auth} from 'firebase-admin';
 import type {NextApiRequest, NextApiResponse} from 'next';
 
-import {createSite, getAllSites} from '@/lib/firebase-server-apis';
+import {createSite, getAllSites, getUserSites} from '@/lib/firebase-server-apis';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
   if (req.method === 'GET') {
-    const sites = await getAllSites();
-    return res.status(200).json({sites});
+    try {
+      const authorization = req.headers.authorization ?? '';
+      const token = authorization?.replace(`Bearer `, '');
+
+      const {uid} = await auth().verifyIdToken(token);
+      const sites = await getUserSites(uid);
+
+      return res.status(200).json({sites});
+    } catch (error) {
+      res.status(500).json({error});
+    }
   }
 
   if (req.method === 'POST') {

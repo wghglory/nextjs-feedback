@@ -22,7 +22,7 @@ import {createSite} from '@/lib/firebase-web-apis';
 import {Site} from '@/models/site';
 
 const AddSiteButtonWithModal = ({children}: {children: React.ReactNode}) => {
-  const auth = useAuth();
+  const {user} = useAuth();
   const initialRef = useRef(null);
   const {isOpen, onOpen, onClose} = useDisclosure();
   const {handleSubmit, control, reset} = useForm({
@@ -40,6 +40,7 @@ const AddSiteButtonWithModal = ({children}: {children: React.ReactNode}) => {
       body: JSON.stringify(site),
       headers: {
         'Content-type': 'application/json; charset=UTF-8',
+        Authorization: `Bear ${user?.accessToken}`,
       },
     }),
   );
@@ -51,7 +52,7 @@ const AddSiteButtonWithModal = ({children}: {children: React.ReactNode}) => {
 
   const onCreateSite = ({name, url}: Site) => {
     const newSite = {
-      authorId: auth.user?.uid ?? '',
+      authorId: user?.uid ?? '',
       name,
       url,
     };

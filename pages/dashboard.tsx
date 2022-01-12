@@ -1,5 +1,6 @@
 import {useQuery} from 'react-query';
 
+import {useAuth} from '@/components/auth/AuthProvider';
 import DashboardShell from '@/components/features/dashboard/DashboardShell';
 import EmptyState from '@/components/features/dashboard/EmptyState';
 import SiteTable from '@/components/features/site-table/SiteTable';
@@ -7,8 +8,16 @@ import SiteTableSkeleton from '@/components/features/site-table/SiteTableSkeleti
 import {Site} from '@/models/site';
 
 const Dashboard = () => {
-  const {data = {sites: []}, isLoading} = useQuery<{sites: Site[]}>('getSites', () =>
-    fetch('/api/sites').then((res) => res.json()),
+  const {user} = useAuth();
+  const {data = {sites: []}, isLoading} = useQuery<{sites: Site[]}>(
+    'getSites',
+    () =>
+      fetch('/api/sites', {
+        headers: new Headers({Authorization: `Bearer ${user?.accessToken}`}),
+      }).then((res) => res.json()),
+    {
+      enabled: !!user?.accessToken,
+    },
   );
 
   if (isLoading) {
