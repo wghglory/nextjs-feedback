@@ -24,6 +24,7 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-hook-form": "^7.22.5",
+    "react-icons": "^4.3.1",
     "react-query": "^3.34.7",
     "uuid": "^8.3.2"
   },

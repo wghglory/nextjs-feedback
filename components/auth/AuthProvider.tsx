@@ -1,14 +1,17 @@
 import '@/lib/firebase-web';
 
 import {
+  AuthProvider,
   getAuth,
   GithubAuthProvider,
+  GoogleAuthProvider,
   onAuthStateChanged,
   signInWithPopup,
   signOut,
   User as FirebaseUser,
 } from 'firebase/auth';
 import cookie from 'js-cookie';
+import {useRouter} from 'next/router';
 import React, {createContext, useContext, useEffect, useState} from 'react';
 
 import {cookieName} from '@/const';
@@ -18,12 +21,14 @@ import {User} from '@/models/user';
 type AuthState = {
   user: User | null;
   signinWithGithub: () => void;
+  signinWithGoogle: () => void;
   signout: () => void;
 };
 
 const initialState: AuthState = {
   user: null,
   signinWithGithub: () => {},
+  signinWithGoogle: () => {},
   signout: () => {},
 };
 
@@ -44,12 +49,45 @@ export function useAuth() {
 }
 
 function useProvideAuth() {
+  const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
 
-  const provider = new GithubAuthProvider();
   const auth = getAuth();
 
+  const signinWithGoogle = () => {
+    return handleSignin(new GoogleAuthProvider());
+  };
+
   const signinWithGithub = () => {
+    return handleSignin(new GithubAuthProvider());
+  };
+
+  const signout = () => {
+    return signOut(auth).then(() => {
+      setUser(null);
+      cookie.remove(cookieName);
+      router.push('/');
+    });
+  };
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      if (firebaseUser) {
+        // User is signed in, see docs for a list of available properties
+        // https://firebase.google.com/docs/reference/js/firebase.User
+        const user = formatUser(firebaseUser as FirebaseUser & {accessToken: string});
+        setUser(user);
+      } else {
+        // User is signed out
+        setUser(null);
+        cookie.remove(cookieName);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [auth]);
+
+  function handleSignin(provider: AuthProvider) {
     return signInWithPopup(auth, provider)
       .then((res) => {
         // This gives you a GitHub Access Token. You can use it to access the GitHub API.
@@ -80,35 +118,12 @@ function useProvideAuth() {
         // ...
         cookie.remove(cookieName);
       });
-  };
-
-  const signout = () => {
-    return signOut(auth).then(() => {
-      setUser(null);
-      cookie.remove(cookieName);
-    });
-  };
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      if (firebaseUser) {
-        // User is signed in, see docs for a list of available properties
-        // https://firebase.google.com/docs/reference/js/firebase.User
-        const user = formatUser(firebaseUser as FirebaseUser & {accessToken: string});
-        setUser(user);
-      } else {
-        // User is signed out
-        setUser(null);
-        cookie.remove(cookieName);
-      }
-    });
-
-    return () => unsubscribe();
-  }, [auth]);
+  }
 
   return {
     user,
     signinWithGithub,
+    signinWithGoogle,
     signout,
   };
 }

@@ -1,5 +1,5 @@
 /* firestore for web! */
-import {addDoc, collection, doc, getFirestore, serverTimestamp, setDoc} from 'firebase/firestore';
+import {addDoc, collection, deleteDoc, doc, getFirestore, setDoc} from 'firebase/firestore';
 
 import {Feedback} from '@/models/feedback';
 import {Site} from '@/models/site';
@@ -29,5 +29,13 @@ export async function createFeedback(feedback: Feedback) {
     return await addDoc(collection(db, 'feedbacks'), {...feedback, createdAt: new Date().toISOString()});
   } catch (e) {
     console.error('Error adding document: ', e);
+  }
+}
+
+export async function deleteFeedback(id: string) {
+  try {
+    await deleteDoc(doc(db, 'feedbacks', id));
+  } catch (e) {
+    console.error('Error deleting document: ', e);
   }
 }
