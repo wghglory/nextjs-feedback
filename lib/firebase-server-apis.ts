@@ -28,6 +28,18 @@ export async function getAllFeedbacks(siteId: string) {
   return feedbacks;
 }
 
+export async function getUserFeedback(uid: string) {
+  const snapshot = await db.collection('feedbacks').where('authorId', '==', uid).get();
+
+  const feedbacks: Feedback[] = [];
+
+  snapshot.forEach((doc) => {
+    feedbacks.push({id: doc.id, ...doc.data()} as Feedback);
+  });
+
+  return feedbacks;
+}
+
 export async function getAllSites() {
   const snapshot = await db.collection('sites').get();
   const sites: Site[] = [];

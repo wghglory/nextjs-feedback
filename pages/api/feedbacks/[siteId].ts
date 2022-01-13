@@ -2,15 +2,15 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
 
 import {getAllFeedbacks} from '@/lib/firebase-server-apis';
+import {Feedback} from '@/models/feedback';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<{items: Feedback[]} | unknown>) {
   const siteId = req.query.siteId as string;
 
   try {
     const feedbacks = await getAllFeedbacks(siteId);
-    console.log(feedbacks);
-    res.status(200).json({feedbacks});
-  } catch (error) {
+    res.status(200).json({items: feedbacks});
+  } catch (error: unknown) {
     res.status(500).json({error});
   }
 }
