@@ -18,7 +18,12 @@ export async function createUser(user: User) {
 
 export async function createSite(site: Site) {
   try {
-    return await addDoc(collection(db, 'sites'), {...site, createdAt: new Date().toISOString()});
+    // Add a new document with a generated id
+    const siteRef = doc(collection(db, 'sites'));
+
+    // later...
+    await setDoc(siteRef, {...site, createdAt: new Date().toISOString()});
+    return siteRef;
   } catch (e) {
     console.error('Error adding document: ', e);
   }

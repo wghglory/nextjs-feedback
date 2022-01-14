@@ -57,23 +57,36 @@ const AddSiteButtonWithModal = ({children}: {children: React.ReactNode}) => {
       url,
     };
 
-    // createSite(newSite); // web inserts database directly.
+    // web inserts database directly.
+    createSite(newSite).then((res) => {
+      toast({
+        title: 'Success!',
+        description: "We've added your site.",
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      });
 
-    postSiteMutation.mutate(newSite, {
-      onSuccess() {
-        toast({
-          title: 'Success!',
-          description: "We've added your site.",
-          status: 'success',
-          duration: 5000,
-          isClosable: true,
-        });
+      queryClient.invalidateQueries('getSites');
 
-        queryClient.invalidateQueries('getSites');
-
-        closeModal();
-      },
+      closeModal();
     });
+
+    // postSiteMutation.mutate(newSite, {
+    //   onSuccess() {
+    //     toast({
+    //       title: 'Success!',
+    //       description: "We've added your site.",
+    //       status: 'success',
+    //       duration: 5000,
+    //       isClosable: true,
+    //     });
+
+    //     queryClient.invalidateQueries('getSites');
+
+    //     closeModal();
+    //   },
+    // });
   };
 
   return (

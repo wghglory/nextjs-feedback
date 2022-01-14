@@ -5,8 +5,8 @@ import TableHeader from '@/components/core/TableHeader';
 import AddSiteButtonWithModal from '@/components/features/dashboard/AddSiteButtonWithModal';
 import DashboardShell from '@/components/features/dashboard/DashboardShell';
 import EmptyState from '@/components/features/dashboard/EmptyState';
-import SiteTable from '@/components/features/site-table/SiteTable';
-import SiteTableSkeleton from '@/components/features/site-table/SiteTableSkeletion';
+import SiteTable from '@/components/features/site/SiteTable';
+import SiteTableSkeleton from '@/components/features/site/SiteTableSkeletion';
 import {Site} from '@/models/site';
 
 const Dashboard = () => {

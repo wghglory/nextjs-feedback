@@ -105,6 +105,7 @@ function useProvideAuth() {
         // save to firebase db
         createUser(user);
         setUser(user);
+        router.push('/dashboard');
         return user;
       })
       .catch((error) => {
@@ -117,6 +118,8 @@ function useProvideAuth() {
         const credential = GithubAuthProvider.credentialFromError(error);
         // ...
         cookie.remove(cookieName);
+
+        router.push('/');
       });
   }
 
